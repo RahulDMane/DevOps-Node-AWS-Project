@@ -118,13 +118,13 @@ exports.handler = async (event) => {
 };
 ---
 
-### 4. IAM User for Review
+ 4. IAM User for Review
 
 IAM user created with read-only access to EC2, ASG, ELB, CodePipeline, Lambda, and CloudWatch for review purposes.
 
 ---
 
-### 5. Resources and References
+ 5. Resources and References
 
 - [AWS Auto Scaling](https://docs.aws.amazon.com/autoscaling/)
 - [AWS CodePipeline](https://docs.aws.amazon.com/codepipeline/)
