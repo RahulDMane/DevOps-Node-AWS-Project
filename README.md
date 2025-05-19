@@ -23,12 +23,28 @@ This project demonstrates a full-stack DevOps implementation for a Node.js appli
 - CloudWatch alarms based on CPU utilization
 
 ### 🛠️ Setup Steps
-1. Launch EC2 Instance
-2. Install Node.js, Nginx, Git
-3. Clone and Run Node App
-4. Configure Nginx for multiple node processes
-5. Create Launch Template and Auto Scaling Group
-6. Attach Load Balancer and CloudWatch Alarms
+1. **Launch EC2 Instance** (Amazon Linux 2 or Ubuntu)
+2. **Install Node.js, Nginx, Git**
+3. **Clone and Run Node App**
+4. **Nginx Config for Load Balancing** between ports `3000`, `3001`, etc.
+5. **Create Launch Template** with User Data:
+    ```bash
+    #!/bin/bash
+    yum update -y
+    curl -fsSL https://rpm.nodesource.com/setup_18.x | bash -
+    yum install -y nodejs git nginx
+    git clone https://github.com/your-repo/node-app.git /home/ec2-user/app
+    cd /home/ec2-user/app
+    npm install
+    PORT=3000 node app.js &
+    PORT=3001 node app.js &
+    systemctl enable nginx
+    systemctl start nginx
+    ```
+6. **Set up Application Load Balancer (ALB)**
+7. **Create Auto Scaling Group (ASG)** using the launch template
+8. **Set Target Tracking Scaling Policy**
+9. **Create CloudWatch Alarm for CPU > 70%**
 
 ---
 
@@ -41,10 +57,32 @@ This project demonstrates a full-stack DevOps implementation for a Node.js appli
 
 ### 🛠️ Setup Steps
 1. Push Code to GitHub
-2. Create CodeBuild Project
+ **Push Code to GitHub Repository**: [repo-link]
+      2. Create CodeBuild Project
+ **Create CodeBuild Project**
+    - Runtime: Amazon Linux / Ubuntu
+    - BuildSpec file:
+      ```yaml
+      version: 0.2
+      phases:
+        install:
+          commands:
+            - npm install
+        build:
+          commands:
+            - npm test
+      artifacts:
+        files:
+          - '**/*'
+      ```
 3. Define buildspec.yml
-4. Create CodePipeline with Source, Build, and Deploy stages
+   
+ **Create AWS CodePipeline**
+    - Source: GitHub
+    - Build: CodeBuild
+    - Deploy: Elastic Beanstalk (or ECS/Fargate)
 
+4. Create CodePipeline with Source, Build, and Deploy stages
 ---
 
 ## 3. Serverless API with AWS Lambda & API Gateway
@@ -55,11 +93,29 @@ This project demonstrates a full-stack DevOps implementation for a Node.js appli
 - IAM roles and least privilege permissions
 
 ### 🛠️ Setup Steps
-1. Create Lambda Function in Node.js
-2. Set Up API Gateway routes
-3. Use environment variables for MongoDB connection
-4. Connect to MongoDB Atlas
+1. **Create AWS Lambda Function** in Node.js (e.g., `getUser.js`)
+2. **Set Up API Gateway** with REST routes
+3. **Use Environment Variables** for MongoDB connection string
+4. **Connect to MongoDB Atlas**
 
+Example Lambda function:
+```javascript
+const { MongoClient } = require('mongodb');
+
+exports.handler = async (event) => {
+  const uri = process.env.MONGO_URI;
+  const client = new MongoClient(uri);
+
+  await client.connect();
+  const db = client.db('mydb');
+  const users = await db.collection('users').find().toArray();
+  await client.close();
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(users),
+  };
+};
 ---
 
 ## 4. IAM User for Review
