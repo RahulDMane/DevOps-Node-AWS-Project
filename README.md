@@ -32,21 +32,20 @@ This project demonstrates a full-stack DevOps implementation for a Node.js appli
    #!/bin/bash
 apt update -y
 apt install -y curl gnupg
-
-# Set up Node.js 18.x for Ubuntu
+// Set up Node.js 18.x for Ubuntu
 curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 apt install -y nodejs git nginx
 
-# Clone your Node.js app
+// Clone your Node.js app
 git clone https://github.com/your-repo/node-app.git /home/ubuntu/app
 cd /home/ubuntu/app
 npm install
 
-# Run multiple instances of app
+//Run multiple instances of app
 PORT=3000 node app.js &
 PORT=3001 node app.js &
 
-# Enable and start Nginx
+//  Enable and start Nginx
 systemctl enable nginx
 systemctl start nginx
 
