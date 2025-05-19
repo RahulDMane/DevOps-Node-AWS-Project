@@ -29,17 +29,27 @@ This project demonstrates a full-stack DevOps implementation for a Node.js appli
 4. **Nginx Config for Load Balancing** between ports `3000`, `3001`, etc.
 5. **Create Launch Template** with User Data:
     ```bash
-    #!/bin/bash
-    yum update -y
-    curl -fsSL https://rpm.nodesource.com/setup_18.x | bash -
-    yum install -y nodejs git nginx
-    git clone https://github.com/your-repo/node-app.git /home/ec2-user/app
-    cd /home/ec2-user/app
-    npm install
-    PORT=3000 node app.js &
-    PORT=3001 node app.js &
-    systemctl enable nginx
-    systemctl start nginx
+   #!/bin/bash
+apt update -y
+apt install -y curl gnupg
+
+# Set up Node.js 18.x for Ubuntu
+curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+apt install -y nodejs git nginx
+
+# Clone your Node.js app
+git clone https://github.com/your-repo/node-app.git /home/ubuntu/app
+cd /home/ubuntu/app
+npm install
+
+# Run multiple instances of app
+PORT=3000 node app.js &
+PORT=3001 node app.js &
+
+# Enable and start Nginx
+systemctl enable nginx
+systemctl start nginx
+
     ```
 6. **Set up Application Load Balancer (ALB)**
 7. **Create Auto Scaling Group (ASG)** using the launch template
