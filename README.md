@@ -28,32 +28,31 @@ This project demonstrates a full-stack DevOps implementation for a Node.js appli
 3. **Clone and Run Node App**
 4. **Nginx Config for Load Balancing** between ports `3000`, `3001`, etc.
 5. **Create Launch Template** with User Data:
-    ```bash
-   #!/bin/bash
+   '''
+ #!/bin/bash
 apt update -y
-apt install -y curl gnupg
-// Set up Node.js 18.x for Ubuntu
-curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-apt install -y nodejs git nginx
 
-// Clone your Node.js app
-git clone https://github.com/your-repo/node-app.git /home/ubuntu/app
+apt install -y curl GnuPG
+
+curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+
+apt install -y nodejs git nginx
+git clone [https://github.com/your-repo/node-app.git](https://github.com/RahulDMane/DevOps-Node-AWS-Project.git) /home/ubuntu/app
+
 cd /home/ubuntu/app
 npm install
 
-//Run multiple instances of app
 PORT=3000 node app.js &
 PORT=3001 node app.js &
-
-//  Enable and start Nginx
 systemctl enable nginx
 systemctl start nginx
+'''
 
-    ```
-6. **Set up Application Load Balancer (ALB)**
-7. **Create Auto Scaling Group (ASG)** using the launch template
-8. **Set Target Tracking Scaling Policy**
-9. **Create CloudWatch Alarm for CPU > 70%**
+
+7. **Set up Application Load Balancer (ALB)**
+8. **Create Auto Scaling Group (ASG)** using the launch template
+9. **Set Target Tracking Scaling Policy**
+10. **Create CloudWatch Alarm for CPU > 70%**
 
 ---
 
